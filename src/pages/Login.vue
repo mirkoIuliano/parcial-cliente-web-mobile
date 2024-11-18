@@ -1,5 +1,11 @@
+<script setup>
+import BaseHeading1 from '../components/BaseHeading1.vue';
+
+
+</script>
+
 <template>
 
-    <h1>Iniciar Sesión</h1>
+    <BaseHeading1>Iniciar Sesión</BaseHeading1>
     
 </template>

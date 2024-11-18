@@ -6,22 +6,24 @@
 
 <template>
 <!-- dentro de template acá va toda la semántica del componente, el HTML  -->
-    <nav class="navbar">
-        <router-link to="/" class="brand">DV Social</router-link>
-        <ul class="main-menu">
-            <li><router-link to="/">Home</router-link></li>
-            <li><router-link to="/chat">Chat</router-link></li>
-            <li><router-link to="/registrarse">Crear Cuenta</router-link></li>
-            <li><router-link to="/iniciar-sesion">Iniciar Sesión</router-link></li>
+    <nav class="flex justify-between items-center p-4 bg-slate-300 text-slate-800">
+        <router-link to="/" class="text-xl">DV Social</router-link>
+
+        <ul class="flex gap-4 items-center">
+            <li><router-link class="block py-1 px-2" to="/">Home</router-link></li>
+            <li><router-link class="block py-1 px-2" to="/chat">Chat</router-link></li>
+            <li><router-link class="block py-1 px-2" to="/registrarse">Crear Cuenta</router-link></li>
+            <li><router-link class="block py-1 px-2" to="/iniciar-sesion">Iniciar Sesión</router-link></li>
         </ul>
+
     </nav>
 
-    <main class="content">
+    <main class="p-4">
         <!-- tenemos que usar el componente de router-view, que indica dónde el compontente se tiene que renderizar -->
         <router-view></router-view>
     </main>
 
-    <footer class="footer">
+    <footer class="flex justify-center items-center bg-slate-800 text-white h-25">
         <p>Copyright © Da Vinci 2024</p>
     </footer>
 

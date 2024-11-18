@@ -1,5 +1,11 @@
+<script setup>
+import BaseHeading1 from '../components/BaseHeading1.vue';
+
+
+</script>
+
 <template>
 
-    <h1>Crear Cuenta</h1>
+    <BaseHeading1>Crear Cuenta</BaseHeading1>
     
 </template>

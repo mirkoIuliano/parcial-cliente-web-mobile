@@ -1,5 +1,11 @@
+<script setup>
+import BaseHeading1 from '../components/BaseHeading1.vue';
+
+
+</script>
+
 <template>
 
-    <h1>Chat Público</h1>
+    <BaseHeading1>Chat Público</BaseHeading1>
     
 </template>
