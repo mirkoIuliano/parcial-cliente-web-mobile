@@ -1,7 +1,6 @@
 <script setup>
 //  dentro de script aca va la lógica del componente
 
-//probando
 </script>
 
 <template>
