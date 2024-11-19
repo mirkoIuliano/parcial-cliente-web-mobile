@@ -2,6 +2,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -15,3 +16,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// creamos la variable db, que inicia la conexión con Firestore y exporta la referencia a la base. Esta referencia va a ser necesaria para todas las acciones que yo quiero hacer contra la base de datos
+export const db = getFirestore(app);
