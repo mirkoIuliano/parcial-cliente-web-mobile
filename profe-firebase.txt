@@ -1,0 +1,19 @@
+# Firebase
+https://firebase.google.com/
+
+Firebase es una plataforma en la nube, propiedad de Google.
+Provee de lo que conocemos como un "BaaS" o "Backend as a Service".
+"BaaS" es un tipo de los conocidos como "SaaS" (Software as a Service).
+
+Firebase ofrece una amplia gama de servicios. De esos, nosotros vamos a 
+utilizar 3:
+- Firestore
+- Authentication
+- Storage
+
+
+## Cómo crear un proyecto de Firebase
+Primero, necesitamos contar con una cuenta de Google (pueden usar la de Da
+Vinci).
+Con la cuenta en mano, desde la página de Firebase, accedemos a la consola
+desde la barra de navegación.

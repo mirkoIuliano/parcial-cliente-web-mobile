@@ -1,8 +1,10 @@
 <script setup>
-import { onAuthStateChanged } from 'firebase/auth';
 import { onMounted, ref } from 'vue';
-import { auth } from './services/firebase';
+import { logout, subscribeToAuthChanges } from './services/auth';
+import { useRouter } from 'vue-router';
 
+// vamos a obtener la instancia del router usando la función useRouter
+const router = useRouter()
 
 // creamos una variable donde vamos a obtener los datos del usuario autenticado (si es que existe)
 const loggedUser = ref ({
@@ -11,25 +13,15 @@ const loggedUser = ref ({
 })
 
 onMounted(()=> {
-    // Nos "suscribimos" a los cambios de la autenticación
-    onAuthStateChanged // onAuthStateChanged() recibe un callback que se ejecuta cada vez que hay un cambio en el estado de autenticación; en esencia: si paso de ser un usuario autenticado a uno no autenticado o al revés
-    (auth, user => {
-        if(user) {
-            // si existe user, seteamos los valores de loggedUser con los datos del usuario
-            loggedUser.value = {
-                //  En el usuario de Firebase Authentication, el id se llama 'uid' (unic id)
-                id: user.uid,
-                email: user.email, 
-            }
-        } else {
-            // si user no existe entonces los valores del uloggedUser vuelven a ser todos nulos porque significa que no hay un usuario autenticado 
-            loggedUser.value = {
-                id: null,
-                email: null, 
-            }
-        }
-    })
+    subscribeToAuthChanges(newUserData => loggedUser.value = newUserData)
+    // esto sería lo mismo que poner:
+    // subscribeToAuthChanges(function(newUserData) {loggedUser.value = newUserData})
 })
+
+function handleLogout(){
+    logout()
+    router.push('/iniciar-sesion') // usamos el método push para redireccionar a /iniciar-sesion
+}
 </script>
 
 <template>
@@ -51,9 +43,9 @@ onMounted(()=> {
                 -->
                 
                 <li><router-link class="block py-1 px-2" to="/chat">Chat</router-link></li>
-                <li><router-link class="block py-1 px-2" to="/chat">Mi Perfil</router-link></li>
+                <li><router-link class="block py-1 px-2" to="/mi-perfil">Mi Perfil</router-link></li>
                 <li>
-                    <form action="#">
+                    <form action="#" @submit.prevent="handleLogout">
                         <button type="submit">{{ loggedUser.email }} (Cerrar Sesión)</button>
                     </form>
                 </li>

@@ -1,0 +1,50 @@
+# Firestore
+Firestore es una de las dos bases de datos NoSQL que Firebase ofrece
+(siendo Realtime Database la otra).
+
+NoSQL (Not only SQL) es un término "paraguas" (umbrella term) para 
+hablar de todas las bases de datos que no siguen en su totalidad el
+modelo relacional.
+
+Los tipos más populares de bases NoSQL son las "orientadas a documentos"
+(document-oriented database), como son Firestore o MongoDB, y las bases
+de datos de "clave-valor" (key-value databases), como Redis.
+
+Si bien el único denominador común que tienen las bases NoSQL es que no
+implementan el modelo de SQL (al menos, no totalmente), hay otra 
+característica que es muy común en este grupo de bases: No permiten
+definir, o si lo permiten es opcional, definir un "schema". Se lo llama
+ser "schemaless".
+
+¿Qué es el "schema"?
+Dentro de software en general, solemos llamar "schema" a la estructura
+que la información debe cumplir.
+En SQL, sabemos, es absolutamente obligatorio y esencial el schema.
+Incluye las relaciones, las tablas, los campos, sus atributos, etc.
+
+El schema en SQL juega un papel esencial.
+La base de datos nos obliga a cumplir con dicho schema. Y además, gracias
+al schema, puede entender mucho mejor nuestra información, que es lo que
+le permite las inmensas capacidades para relacionar información que 
+contienen.
+
+Dicho esto, si las bases de datos NoSQL no obligan a tener un schema,
+podemos deducir algunas cosas:
+
+- Son muy flexibles con la información que podemos grabar.
+- No nos brindan validación de los valores que grabamos.
+- Dependiendo la base y las acciones, pueden potencialmente ser 
+considerablemente más veloces que las bases SQL.
+
+
+## Agregando Firestore a nuestro proyecto
+Cualquiera de los servicios que queramos usar de Firebase requiere que
+lo "habilitemos / registremos".
+
+Firestore nos va a requerir que definamos 2 cosas:
+- Ubicación física de los datos.
+- Reglas de seguridad.
+
+
+## Estructura de datos de Firestore
+https://firebase.google.com/docs/firestore/data-model

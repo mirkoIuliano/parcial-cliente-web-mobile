@@ -15,11 +15,12 @@ const loading = ref(false)
 
 
 async function handleSubmit(){
-    // handleSubmit va a llamar a una función login, que está en el archivo autgh.js
+    // handleSubmit va a llamar a una función login, que está en el archivo auth.js
+
     loading.value = true
 
     try {
-        await login({...user.value})
+        await login({...user.value}) // llamamos a la función login() y le pasamos un objeto con los datos del user (osea los datos ingresados en el fomrulario)
     } catch (error) {
         console.error("[Login handleSubmit] Error al autentificar: ", error)
         // TODO: Manejar el error y mostrar un feedback

@@ -1,0 +1,60 @@
+# Vite
+https://vitejs.dev
+
+¿Qué es Vite?
+Es un "bundler" (empaquetador). En la actualidad, es lejos el más popular.
+
+¿Qué es un "bundler"?
+En la actualidad, el desarrollo de aplicaciones de frontend puede ser sumamente complicado.
+- Los usuarios esperan que nuestros sitios/aplicaciones web carguen y funcionen rápidamente.
+Esto requiere de múltiples optimizaciones y cuidados.
+- Los usuarios esperan que nuestros sitios/aplicaciones sean cada vez más potentes. Esto 
+requiere un trabajo mucho mas elaborado de programación. Y además, esto puede entrar en conflicto
+con el punto anterior.
+- Hoy en día se tiene más consciencia del problema "burnout". Es importante buscar maneras
+de mejorar lo que conocemos como DX (Developer Experience).
+
+Para encarar esas dificultades y necesidades, solemos necesitar de aplicar varias cosas:
+- Optimizaciones de nuestros códigos fuente de JS, CSS, HTML. Esto suele implicar un proceso
+de minificación u ofuscación.
+- Optimizaciones de otros "assets" (recursos). Por ejemplo, podemos querer automatizar una
+tarea para transformar imágenes de un formato a otro más performante. Como podría ser pasar
+de jpeg a webp / avif.
+- Podemos querer usar tecnologías de punta de ECMAScript. Los browsers tardan un tiempo en
+implementar las últimas novedades de ECMAScript. E incluso puede pasar que queramos usar
+una nueva tecnología de ECMAScript que no está finalizada. Esto suele requerir que usemos
+algún "compilador" o "transpilador" que transforme nuestro código de última generación de
+JS a una versión compatible con los browsers actuales. El más famoso de este tipo es Babel.
+- Podemos querer usar tecnologías que no son oficiales o estándares de la web, pero que mejoran
+nuestra DX. Por ejemplo, TypeScript.
+
+Cada una de esas acciones, y muchas otras que podríamos mencionar, suelen requerir la ejecución
+de algún programita específico que las realice.
+Correr todas esas cosas a mano no es factible ni eficiente. Queremos automatizarlo.
+La forma en que lo hacemos hoy en día es a través de los "bundlers".
+
+Un "bundler", entonces, es un programa que permite crear versiones optimizadas a partir de nuestro
+código, según las indicaciones que le demos en su configuración.
+
+
+
+## Instalando Vite
+Para crear un proyecto de Vite, corremos el comando:
+
+    npm create vite@latest
+
+Y seguimos las instrucciones.
+
+Esto va a crearnos la estructura básica de un proyecto de Vite.
+
+De todos los archivos que nos crea, hay 3 que son importantes tener en cuenta:
+- public/
+    Esta es la carpeta donde, por defecto, se deben guardar los "assets" estáticos.
+    Esto es, cualquier recurso que no necesita ser manipulado por Vite.
+
+- package.json
+    Es el documento de configuración del proyecto de npm.
+
+- index.html
+    El [index.html] es el "entry point" de Vite. Es decir, Vite arranca desde este archivo
+    y navega nuestro código.

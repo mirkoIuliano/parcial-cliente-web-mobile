@@ -1,0 +1,26 @@
+# Combinando Authentication con Firestore
+Como hemos visto, y como aclara la documentación de Firebase Authentication,
+este servicio solo permite agregar como datos extras a los usuarios un
+"displayName" y una "photoURL". Nada más.
+
+¿Qué pasa si necesitamos guardar otros datos asociados a un usuario?
+En nuestro caso, estamos queriendo guardar una bio y la carrera que cursa,
+pero podría extenderse a otras cosas como el rol del usuari (si es
+administrador o no), preferencias, etc.
+
+Para estos casos, necesitamos usar una combinación de Authentication con
+Firestore.
+
+La forma en que se combinan, es guardando en Firestore el uid del usuario
+de Authentication.
+
+En nuestro caso, vamos a crear en Firestore una nueva collection de "users",
+donde el id de cada documento sea el uid de Authentication, y el contenido
+del documento sean los datos completos del usuario (email, displayName, 
+bio, career y en otra clase agregaremos aquí la fotoURL).
+
+Para el manejo de los datos del perfil en Firestore vamos a crear un
+servicio aparte. Lo vamos a llamar "user-profile.js".
+Lo separamos de [auth.js] porque queremos solo maneje específicamente los
+datos de la autenticación. Lo que tiene que ver con Firestore, lo va a
+delegar a otro servicio.

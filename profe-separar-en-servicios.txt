@@ -1,0 +1,39 @@
+# Separando Firebase en servicios
+Actualmente, nuestro componente Chat tiene todo lo que hace a las peticiones
+de Firestore.
+Esto va completamente en contra de uno de los principios más comunes en
+programación: el Principio de Responsabilidad Única (Single-Responsibility
+Principle, SRP).
+
+Este principio define:
+"Un elemento debe tener una única razón para cambiar"
+
+¿A qué se refiere con "única razón para cambiar"?
+Tomememos de ejemplo nuestro componente Chat.
+
+¿En qué circunstancias necesitaríamos abrir el archivo para modificarlo?
+- Para modificar la semántica del HTML.
+- Para modificar la estilización.
+- Para cambiar el comportamiento (ej: eventos, métodos, data, etc).
+- Para cambiar cómo se graban los mensajes de chat en el backend.
+- Para cambiar cómo se leen los mensajes de chat del backend.
+
+Si lo analizamos, podemos agrupar estas circunstancias en dos grupos:
+- Las primeras tres listadas, son propias de la naturaleza de ser un 
+    componente.
+- Las últimas dos listadas, en cambio, no tienen nada que ver con un
+    componente. Tienen que ver con cómo se almacenan y recuperan del
+    backend los mensajes de texto.
+
+Tener esta mezcla de responsabilidades tiene algunos problemas:
+
+- Hace más difícil comprender el código.
+- Por extensión, dificulta también el mantenimiento.
+- Dificulta notablemente el testing automatizado (unit testing, integration
+    testing).
+- Limita enormemente la reutilización de código.
+
+Por estas razones, es que se recomienda siempre separar las responsabilidades.
+
+En nuestro caso, vamos a mover todo lo que tiene que ver con Firebase a 
+archivos externos llamados "services".

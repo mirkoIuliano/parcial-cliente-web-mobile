@@ -4,6 +4,10 @@ import Home from '../pages/Home.vue';
 import Login from '../pages/Login.vue';
 import Register from '../pages/Register.vue';
 import Chat from '../pages/Chat.vue';
+import MyProfile from "../pages/MyProfile.vue";
+import MyProfileEdit from "../pages/MyProfileEdit.vue";
+// importamos subscribeToAuthChanges para poder saber si el usuario está o no autenticado (esto lo sabemos con subscribeToAuthChanges y sus observers)
+import { subscribeToAuthChanges } from "../services/auth";
 
 // Definimos las rutas
 // En vue router uno trabja con un arhicvo de configración de rutas. Creamos un array de objetos de ruta. Estos objeto deberían tener al menos 2 propiedades: path (ruta) y el componente que queremos asociar
@@ -13,16 +17,36 @@ const routes = [
         component: Home,
     },
     {
-        path:'/chat', 
-        component: Chat,
-    },
-    {
         path:'/iniciar-sesion', 
         component: Login,
     },
     {
         path:'/registrarse', 
         component: Register,
+    },
+    {
+        path:'/chat', 
+        component: Chat,
+        // agregamos un campo 'meta' a las rutas que requieren autenticación
+        meta: { // los campos meta son campos que le podemos agregar a cualquier ruta, para asignarles el valor que querramos
+            requireAuth: true // el usuario va a necesitar estar autenticado para acceder a esta ruta
+        }
+    },
+    {
+        path:'/mi-perfil', 
+        component: MyProfile,
+        // agregamos un campo 'meta' a las rutas que requieren autenticación
+        meta: { // los campos meta son campos que le podemos agregar a cualquier ruta, para asignarles el valor que querramos
+            requireAuth: true // el usuario va a necesitar estar autenticado para acceder a esta ruta
+        }
+    },
+    {
+        path:'/mi-perfil/editar', 
+        component: MyProfileEdit,
+        // agregamos un campo 'meta' a las rutas que requieren autenticación
+        meta: { // los campos meta son campos que le podemos agregar a cualquier ruta, para asignarles el valor que querramos
+            requireAuth: true // el usuario va a necesitar estar autenticado para acceder a esta ruta
+        }
     },
 ];
 
@@ -49,6 +73,29 @@ const router = createRouter(
         // history: createWebHistory(),
     }
 )
+
+
+// Nos suscribimos a los datos del usuario autenticado
+let loggedUser = {
+    id: null,
+    email: null,
+    displayName: null,
+    bio: null,
+    career: null,
+}
+
+subscribeToAuthChanges(newUserData => loggedUser = newUserData)
+
+// Agregamos que en cada navegación de ruta se verifique si la ruta requiere autenticación, y de así serlo, verifique si el usuario está autenticado. De no estarlo, lo mandamos al login.
+router.beforeEach( // vamos a usar la función beforeEach(), que se ejecuta antes de cada navegación de ruta. beforeEach me pasa los objetos de la ruta a la que voy (to) y a la que vengo (from)
+    (to, from) => {
+        if (to.meta.requireAuth /* si la ruta a la que quiero entrar tiene como atributo meta requireAuth en true */ && loggedUser.id === null /* y el id del usuario autenticado es null (osea que no hay un usuario autenticado) */) {
+            return { // entonces lo retornamos a inicar-sesion
+                path: '/iniciar-sesion'
+            }
+        }
+
+})
 
 
 // exportamos el router
