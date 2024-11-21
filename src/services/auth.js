@@ -164,19 +164,35 @@ export async function logout() {
 | algunas implementaciones lo llaman "attach" o "listen".
 | Esto sería un obsrever ===> elementHTML.addEventListener('click', function(){})
 | 
+| Clase 8 min 15 habla sobre las "memory leaks" y min 20 s/ esto de los observers
+| Es crucial que los observers tengan un mecanismo para cancelar su suscripción.
+| Si no hacemos esto se va a agregar un nuevo observer arriba del otro y vamos a
+| ir acumulando muchísimos hasta poder llegar a colapsar la memoria de la PC.
+| 
+| 
+| 
 +--------------------------------------------------------------------------------*/
 
 // Vamos a crear 3 funciones que vamos a usar para implementar el observer:
 /**
  * 
  * @param {Function} callback 
+ * @returns {Function} Función para cancelar la suscripción.
  */
 export function subscribeToAuthChanges(callback){
     // pusheamos la función callback al array observers
     observers.push(callback)
 
+    console.log("Observer agregado. El stack actual es: ", observers)
+
     //Inmediatamente notificamos al callback los datos actuales del usuario autenticado 
     notify(callback)
+
+    // Retornamos una nueva función, que al ejecturase elimine este observer que acaba de agregar
+    return () => {
+        observers = observers.filter(obs => obs !== callback) /* setea los observers como la lista actual, pero filtrando (osea sacando) todos los que no sean el callback actual */
+        console.log("Observer removido. El stack es: ", observers)
+    }  
 }
 
 /**
@@ -185,6 +201,7 @@ export function subscribeToAuthChanges(callback){
  * @param {Function} callback 
  */
 function notify(callback){
+    console.log("Notificando a un observer...")
     callback({...loggedUser}) // Es muy importante que le pasemos una COPIA y no la variable loggedUser en sí, porque si hacemos esto, la estamos pasando por referencia y esto puede abrir problmeas
 }
 

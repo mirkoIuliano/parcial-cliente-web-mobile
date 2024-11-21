@@ -1,7 +1,10 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { subscribeToAuthChanges } from '../services/auth';
 import BaseHeading1 from '../components/BaseHeading1.vue';
+
+// creamos "unsubscribeFromAuth" y la definimos como una función vacía (porque después vamos a igual "unsubscribeFromAuth" a una función)
+let unsubscribeFromAuth = () => {}
 
 const loggedUser = ref({
     id: null,
@@ -13,7 +16,13 @@ const loggedUser = ref({
 
 onMounted(() => {
     // cuando se monte queremos llamar al subscribeToAuthChanges
-    subscribeToAuthChanges(newUserData => loggedUser.value = newUserData)
+    unsubscribeFromAuth = subscribeToAuthChanges(newUserData => loggedUser.value = newUserData)
+    // subscribeToAuthChanges retorna como resultado una función para cancelar la suscripción. Esta función se va a guardar en unsubscribeFromAuth, osea que dentro de unsubscribeFromAuth va a tener la función para desuscrirse 
+})
+
+onUnmounted(() => {
+    // Cuando se desmonte vamos a cancelar la suscripción
+    unsubscribeFromAuth()
 })
 
 </script>

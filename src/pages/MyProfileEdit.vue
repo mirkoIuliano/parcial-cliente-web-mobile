@@ -1,8 +1,11 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import BaseHeading1 from '../components/BaseHeading1.vue';
 import BaseButton from '../components/BaseButton.vue';
 import { editMyProfile, subscribeToAuthChanges } from '../services/auth';
+
+// creamos "unsubscribeFromAuth" y la definimos como una función vacía (porque después vamos a igual "unsubscribeFromAuth" a una función)
+let unsubscribeFromAuth = () => {}
 
 const loading = ref(false)
 
@@ -24,13 +27,17 @@ const handleSubmit = async () => {
 
 onMounted(()=> {
     // cuando monte queremos que traiga los datos del usuario autenticado para que en nuestro formulario de editar aparezcan los datos actuales, en vez de los input en blanco sin nada
-    subscribeToAuthChanges(
+    unsubscribeFromAuth = subscribeToAuthChanges(
         newUserData => editData.value = {
             displayName : newUserData.displayName,
             bio : newUserData.bio,
             career : newUserData.career,
         })
+    // subscribeToAuthChanges retorna como resultado una función para cancelar la suscripción. Esta función se va a guardar en unsubscribeFromAuth, osea que dentro de unsubscribeFromAuth va a tener la función para desuscrirse 
+})
 
+onUnmounted(() => {
+    unsubscribeFromAuth()
 })
 
 </script>

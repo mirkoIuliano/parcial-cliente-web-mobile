@@ -84,6 +84,7 @@ let loggedUser = {
     career: null,
 }
 
+// Creo que llamamos acá para poder ver si el usuario está autenticado o no y con esto permitir o no la navegación a cieras rutas
 subscribeToAuthChanges(newUserData => loggedUser = newUserData)
 
 // Agregamos que en cada navegación de ruta se verifique si la ruta requiere autenticación, y de así serlo, verifique si el usuario está autenticado. De no estarlo, lo mandamos al login.
