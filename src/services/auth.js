@@ -14,6 +14,24 @@ let loggedUser = {
     fullyLoaded: false,
 }
 
+/* clase 8 min 57:30
+    Cuando hacemos refresh en una página que tiene que verificar si el usuario está autenticado o no, nos enviaba a la página de '/iniciar-sesion' a pesar de que ya habíamos ingresado con un usuario autenticado.
+    Esto ocurría porque a penas refresheamos la página lo primero que se ejecuta es una función de [router.js] que verifica si la ruta tiene un campo 'meta' que verifique si la ruta es o no para un usuario autenticado. Entonces como ve que sí es para un usuario autenticado (y todavía no recibió los datos de si el usuario lo está o no), reenvía al usuario a la página de '/iniciar-sesion' para que incie sesion.
+    Después de esta función es que se trae el dato de si el usuario está o no verificado (tarda un poco más y esta pequeña diferencia de tiempo es lo que hace que el refresh funcione de una menera que no querramos).
+    La solución que vamos a hacer es guardar los datos del usuario dentro de localStorage, para tener un registro local de si el usuario se autenticó o no.
+    Para aplicarlo, en cada etapa en el que el usuario se va autenticando vamos a guardar en localStorage.
+    También guardamos en localStorage cada vez que modificamos los datos del usuario (como cuando editamos el perfil).
+        - Podemos ver esto así: F12 > Application > Local Storage
+    
+    Con esto ya hecho vamos a preguntar si dentro de localStrage existe 'user' (osea si se autenticó) y si existe entonces copiamos los datos del localStorage al loggedUser
+*/
+// A penas se levanta la página preguntamos si el usuario figura como autenticado, en cuyo caso levantamos los datos
+if(localStorage.getItem('user')) // si en localStorage tenemos el dato 'user'
+{
+    // vamos a hacer que loggedUser sea igual a un JSON.parse de los datos que están en localStorage, 'user'
+    loggedUser = JSON.parse(localStorage.getItem('user'))
+}
+
 // definimos un array de observers
 let observers = []
 
@@ -22,12 +40,16 @@ onAuthStateChanged // onAuthStateChanged() recibe un callback que se ejecuta cad
 (auth, async user => {
     if(user) {
         // si existe user, seteamos los valores de loggedUser con los datos del usuario
+        console.log("Confirmando que el usuario está autenticado.")
         loggedUser = {
             //  En el usuario de Firebase Authentication, el id se llama 'uid' (unic id)
             id: user.uid,
             email: user.email, 
             displayName: user.displayName, 
         }
+
+        // Actualizamos en localStorage. Cada vez que hagamos un cambio en los datos del usuario vamos a actualizarlo en localStirage también
+        localStorage.setItem('user', JSON.stringify(loggedUser)) 
 
         // Buscamos ahora el resto de datos del perfil. Estos otros datos se enceutnran en una collection, en el document respectivo del usuario
         getUserProfileByID(user.uid)
@@ -38,6 +60,9 @@ onAuthStateChanged // onAuthStateChanged() recibe un callback que se ejecuta cad
                     career: userProfile.career, // la carrera
                     fullyLoaded: true, // y le cambiamos el fullyLoaded a true
                 }
+
+                // Actualizamos en localStorage. Cada vez que hagamos un cambio en los datos del usuario vamos a actualizarlo en localStirage también
+                localStorage.setItem('user', JSON.stringify(loggedUser)) 
 
                 // Notificamos a todos los observers que la data está actulizada
                 notifyAll()
@@ -53,6 +78,9 @@ onAuthStateChanged // onAuthStateChanged() recibe un callback que se ejecuta cad
             career: null,
             fullyLoaded: false,
         }
+
+        // Actualizamos en localStorage. Cada vez que hagamos un cambio en los datos del usuario vamos a actualizarlo en localStirage también
+        localStorage.removeItem('user') 
     }
     
     // Como cambiaron los datos de la autenticación notificamos a los observer
@@ -131,7 +159,7 @@ export async function editMyProfile({displayName, bio, career}) {
             }
         ) 
 
-        /* CLASE 8 min 50 saca los 'await' que habían en las funciones updateProfile() y updateUserProfile() porque en realidad no nos importa que hagan estas funciones a la vez
+        /* CLASE 8 min 50 saca los 'await' que habían en las funciones updateProfile() y updateUserProfile() porque en realidad no nos importa que hagan estas funciones a la vez y además es mejor por cuestiones de rendimietno que se hagan al unísono
             Lo que pasa es que en MyProfileEdit tenemos una variable 'loading' que nos sirve para indicar cuando se está guardando los datos (sirve más que nada para que se muestre en la interfaz que se están guardando los datos y comunicarselo al usuario)
             Como sacamos estos await, este 'loading' cambia de estado de true a false de manera inmediata porque las funciones se hacen a la vez y no hay nada a lo que esperar.
             Para solucionar esto se crearon promiseAuth y promisePromise, que van a capturar las promesas de las dos funciones (ambas promesas retornan funciones)
@@ -154,6 +182,10 @@ export async function editMyProfile({displayName, bio, career}) {
             bio, // más la bio
             career, // más la career
         }
+
+        // Actualizamos en localStorage. Cada vez que hagamos un cambio en los datos del usuario vamos a actualizarlo en localStirage también
+        localStorage.setItem('user', JSON.stringify(loggedUser)) 
+
         // llamaos al notifyAll() para notificar a todos los obervers de los cambios
         notifyAll()
     } catch (error) {

@@ -90,6 +90,7 @@ subscribeToAuthChanges(newUserData => loggedUser = newUserData)
 // Agregamos que en cada navegación de ruta se verifique si la ruta requiere autenticación, y de así serlo, verifique si el usuario está autenticado. De no estarlo, lo mandamos al login.
 router.beforeEach( // vamos a usar la función beforeEach(), que se ejecuta antes de cada navegación de ruta. beforeEach me pasa los objetos de la ruta a la que voy (to) y a la que vengo (from)
     (to, from) => {
+        console.log("Verificando si el usuario tiene acceso a esta ruta: ", to)
         if (to.meta.requireAuth /* si la ruta a la que quiero entrar tiene como atributo meta requireAuth en true */ && loggedUser.id === null /* y el id del usuario autenticado es null (osea que no hay un usuario autenticado) */) {
             return { // entonces lo retornamos a inicar-sesion
                 path: '/iniciar-sesion'
