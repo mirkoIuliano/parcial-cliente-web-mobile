@@ -114,7 +114,7 @@ export async function login({email, password}) {
 export async function editMyProfile({displayName, bio, career}) {
     try {
         // Actualizamos el displayName en Authentication
-        await updateProfile( // updateProfile recibe 2 parámetro: 
+        const promiseAuth = updateProfile( // updateProfile recibe 2 parámetro: 
             auth.currentUser, // 1. El usuario autenticado
             { // 2. Los datos, que solo pueden ser el nombre del usuario y la URL de la foto 
                 displayName
@@ -124,12 +124,27 @@ export async function editMyProfile({displayName, bio, career}) {
 
 
         // Actualizamos el perfil del usuario en Firestore con la función 'updateUserProfile()' de nuestro archivo 'user-profile.js'
-        updateUserProfile( // a updateUserProfile() le tenemos que pasar dos parámetros:
+        const promiseProfile = updateUserProfile( // a updateUserProfile() le tenemos que pasar dos parámetros:
             loggedUser.id, // el id del usuario que queremos modificar
             { // un objeto con los datos que queremos editar
                 displayName, bio, career
             }
         ) 
+
+        /* CLASE 8 min 50 saca los 'await' que habían en las funciones updateProfile() y updateUserProfile() porque en realidad no nos importa que hagan estas funciones a la vez
+            Lo que pasa es que en MyProfileEdit tenemos una variable 'loading' que nos sirve para indicar cuando se está guardando los datos (sirve más que nada para que se muestre en la interfaz que se están guardando los datos y comunicarselo al usuario)
+            Como sacamos estos await, este 'loading' cambia de estado de true a false de manera inmediata porque las funciones se hacen a la vez y no hay nada a lo que esperar.
+            Para solucionar esto se crearon promiseAuth y promisePromise, que van a capturar las promesas de las dos funciones (ambas promesas retornan funciones)
+        */
+        // Esperamos a que ambas promesas se completen, con ayuda de la función Promise.all()
+        await Promise.all( // all() es un método de la clase Promise, que permite recibir un array de promesas y retorna una nueva promesa, que se resuelve cuando todas las promesas que le pasamos se resuelve, y que se rechaza cuando alguna de las promesas que le mandamos se rechaza
+            [
+                promiseAuth, promiseProfile
+            ]
+        )
+        /*  Clase 8min 56:15
+            De esta manera se guardan en paralelo (a la vez se ejecutan las dos funciones) y tenemos el estado de la información de esto que se está procesando
+        */
 
 
         // Actualizamos los datos locales de loggedUser y notificamos a los observers
@@ -205,7 +220,7 @@ export function subscribeToAuthChanges(callback){
     // pusheamos la función callback al array observers
     observers.push(callback)
 
-    console.log("Observer agregado. El stack actual es: ", observers)
+    // console.log("Observer agregado. El stack actual es: ", observers)
 
     //Inmediatamente notificamos al callback los datos actuales del usuario autenticado 
     notify(callback)
@@ -213,7 +228,7 @@ export function subscribeToAuthChanges(callback){
     // Retornamos una nueva función, que al ejecturase elimine este observer que acaba de agregar
     return () => {
         observers = observers.filter(obs => obs !== callback) /* setea los observers como la lista actual, pero filtrando (osea sacando) todos los que no sean el callback actual */
-        console.log("Observer removido. El stack es: ", observers)
+        // console.log("Observer removido. El stack es: ", observers)
     }  
 }
 
@@ -223,7 +238,7 @@ export function subscribeToAuthChanges(callback){
  * @param {Function} callback 
  */
 function notify(callback){
-    console.log("Notificando a un observer...")
+    // console.log("Notificando a un observer...")
     callback({...loggedUser}) // Es muy importante que le pasemos una COPIA y no la variable loggedUser en sí, porque si hacemos esto, la estamos pasando por referencia y esto puede abrir problmeas
 }
 

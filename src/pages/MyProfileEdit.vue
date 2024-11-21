@@ -23,6 +23,9 @@ const handleSubmit = async () => {
     } catch (error) {
         // TODO: Manejar el error y mostrar un mensaje de feedback
     }
+
+    // cuando termine ponemos el loading en false de vuelta
+    loading.value = false;
 }
 
 onMounted(()=> {
@@ -53,7 +56,8 @@ onUnmounted(() => {
         <label for="bio" class="block mb-2">Biografía</label>
         <textarea 
             id="bio" 
-            class="p-2 min-h-10 w-full border rounded" 
+            class="p-2 min-h-10 w-full border rounded read-only:bg-gray-200" 
+            :readonly="loading"
             v-model="editData.bio"
         ></textarea>
     </div>
@@ -62,21 +66,32 @@ onUnmounted(() => {
         <input 
             type="text" 
             id="displayName" 
-            class="p-2 w-full border rounded"
+            class="p-2 w-full border rounded read-only:bg-gray-200"
+            :readonly="loading"
             v-model="editData.displayName"
         >
+        <!-- EXPLICACIÓN DE ALGUNOS ATRIBUTOS:
+            (:readonly="loading"):
+                - es una propiedad que se puede poner en los inputs que sirve para que el input sea solo lectura (no se puede modificar el valor, copiar el valor, ni seleccionarlo)
+            (class="read-only:bg-gray-200"):
+                - read-only es un modificador de Tailwind, que hace que cuando el campo esté como 'readonly' le agregamos ese color de fondo
+        -->
     </div>
     <div class="mb-4">
         <label for="career" class="block mb-2">Carrera</label>
         <input 
             type="text" 
             id="career" 
-            class="p-2 w-full border rounded"
+            class="p-2 w-full border rounded read-only:bg-gray-200"
+            :readonly="loading"
             v-model="editData.career"
         >
     </div>
 
-    <BaseButton>Guardar Cambios</BaseButton>
+    <BaseButton>
+        <!-- esto lo hacemos para mostrar que, mientras se esté grabando aparezca Grabando... y cuando termine/no esté grabando "Guardar Cambios" -->
+        {{ !loading ? "Guardar Cambios" : "Grabando..." }}
+    </BaseButton>
 
     </form>
 </template>

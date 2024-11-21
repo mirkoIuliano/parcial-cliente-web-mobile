@@ -15,12 +15,12 @@ const loading = ref(false)
 
 
 async function handleSubmit(){
-    // handleSubmit va a llamar a una función login, que está en el archivo auth.js
+    // handleSubmit va a llamar a una función register, que está en el archivo auth.js
 
     loading.value = true
 
     try {
-        await register({...user.value}) // llamamos a la función login() y le pasamos un objeto con los datos del user (osea los datos ingresados en el fomrulario)
+        await register({...user.value}) // llamamos a la función register() y le pasamos un objeto con los datos del user (osea los datos ingresados en el fomrulario)
     } catch (error) {
         console.error("[Register handleSubmit] Error al registrarse: ", error)
         // TODO: Manejar el error y mostrar un feedback
