@@ -41,50 +41,37 @@ onAuthStateChanged // onAuthStateChanged() recibe un callback que se ejecuta cad
     if(user) {
         // si existe user, seteamos los valores de loggedUser con los datos del usuario
         console.log("Confirmando que el usuario está autenticado.")
-        loggedUser = {
-            //  En el usuario de Firebase Authentication, el id se llama 'uid' (unic id)
-            id: user.uid,
+        // Actualizamos los datos locales de loggedUser, notificamos a los observers y guardamos los cambios del user en localStorage con la función updateLoggedUser()
+        updateLoggedUser ({ // le pasamos como parámetros un objeto con los datos nuevos del usuario
+            id: user.uid, //  En el usuario de Firebase Authentication, el id se llama 'uid' (unic id)
             email: user.email, 
             displayName: user.displayName, 
-        }
-
-        // Actualizamos en localStorage. Cada vez que hagamos un cambio en los datos del usuario vamos a actualizarlo en localStirage también
-        localStorage.setItem('user', JSON.stringify(loggedUser)) 
+        })
 
         // Buscamos ahora el resto de datos del perfil. Estos otros datos se enceutnran en una collection, en el document respectivo del usuario
         getUserProfileByID(user.uid)
             .then(userProfile => { // userProfile es el objeto que recibimos como respuesta de la función getUserProfileByID
-                loggedUser = { // loggedUser va a ser igual a:
-                    ...loggedUser, // lo que ya tenía 
-                    bio: userProfile.bio, // y le agregamos la bio
+
+                // Actualizamos los datos locales de loggedUser, notificamos a los observers y guardamos los cambios del user en localStorage con la función updateLoggedUser()
+                updateLoggedUser ({ // le pasamos como parámetros un objeto con los datos nuevos del usuario
+                    bio: userProfile.bio, // le agregamos la bio
                     career: userProfile.career, // la carrera
                     fullyLoaded: true, // y le cambiamos el fullyLoaded a true
-                }
-
-                // Actualizamos en localStorage. Cada vez que hagamos un cambio en los datos del usuario vamos a actualizarlo en localStirage también
-                localStorage.setItem('user', JSON.stringify(loggedUser)) 
-
-                // Notificamos a todos los observers que la data está actulizada
-                notifyAll()
+                })
+                
             })
 
     } else {
         // si user no existe, entonces los valores del loggedUser vuelven a ser todos nulos porque significa que no hay un usuario autenticado 
-        loggedUser = {
+        updateLoggedUser ({
             id: null,
             email: null,
             displayName: null,
             bio: null,
             career: null,
             fullyLoaded: false,
-        }
-
-        // Actualizamos en localStorage. Cada vez que hagamos un cambio en los datos del usuario vamos a actualizarlo en localStirage también
-        localStorage.removeItem('user') 
+        })
     }
-    
-    // Como cambiaron los datos de la autenticación notificamos a los observer
-    notifyAll()
 })
 /* 
 Dato: onAuthStateChanged() queda "suelto" en la raíz del proyecto y esto hace que cada vez que alguien importe este archivo auth.js se ejecuta automáticamente onAuthStateChanged().
@@ -175,19 +162,14 @@ export async function editMyProfile({displayName, bio, career}) {
         */
 
 
-        // Actualizamos los datos locales de loggedUser y notificamos a los observers
-        loggedUser = { // a loggedUser le estamos diciendo que:
-            ...loggedUser, // sea igual a lo que ya tenía dentro (...loggedUser)
-            displayName, // más el displayName
-            bio, // más la bio
-            career, // más la career
-        }
+        // Actualizamos los datos locales de loggedUser, notificamos a los observers y guardamos los cambios del user en localStorage con la función updateLoggedUser()
+        updateLoggedUser ({ // le pasamos como parámetros un objeto con los datos nuevos del usuario
+            displayName,
+            bio, 
+            career, 
+        })
 
-        // Actualizamos en localStorage. Cada vez que hagamos un cambio en los datos del usuario vamos a actualizarlo en localStirage también
-        localStorage.setItem('user', JSON.stringify(loggedUser)) 
 
-        // llamaos al notifyAll() para notificar a todos los obervers de los cambios
-        notifyAll()
     } catch (error) {
         console.error('[auth.js editMyProfile] Error al tratar de editar el perfil: ', error)
         throw error // creo que ponemos el 'throw error' porque cuando hacemos esto después podemos manejar el error en el componente
@@ -284,3 +266,19 @@ function notifyAll(){
     )
 }
 // notifyAll se tiene que ejecutar cada vez que alguien cambie los valores en loggedUser. Así que dentro de onAuthStateChanged agregamos esta función
+
+
+/**
+ * Actualiza los datos del usuario autenticado
+ * 
+ * @param {{}} newData 
+ */
+// creamos una función actualizar los datos locales de loggedUser, notificar a los observers y para actualizar el usuario en localStorage
+function updateLoggedUser(newData){
+    loggedUser = { // a loggedUser le estamos diciendo que:
+        ...loggedUser, // sea igual a lo que ya tenía dentro (...loggedUser)
+        ...newData // y que le agregue o modifique según lo nuevo que recibió (argumento newData)
+    }
+    localStorage.setItem('user', JSON.stringify(loggedUser)) // acá lo guardamos en localStorage
+    notifyAll() // acá notificamos a los observers
+}
