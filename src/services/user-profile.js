@@ -6,7 +6,7 @@
     Cada doc va a tener como id el uid del usuario, y como registros va a tener displayName, bio y career 
 */
 
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
 
@@ -53,4 +53,21 @@ export async function getUserProfileByID(id) {
         career: profileSnapshot.data().career,
         bio: profileSnapshot.data().bio,
     }
+}
+
+/**
+ * 
+ * @param {string} id 
+ * @param {{email: string}} data 
+ */
+export async function createUserProfile(id, {email}) {
+    // obtenemos la referencia al documento del usuario usando doc(), mandandole como parámetros: 
+    // 1. la referencia a la base de datos  
+    // 2. el nombre de la collection ('/users') y el id del documento ('/${id}')
+    const profileRef = doc(db, `/users/${id}`)
+    
+    await setDoc( // setDoc es la función para guardar los datos de un documento específico
+        profileRef, // le pasamos la refencia al documento
+        {email} // y le pasamos la data que le queremos guardar
+    ) 
 }

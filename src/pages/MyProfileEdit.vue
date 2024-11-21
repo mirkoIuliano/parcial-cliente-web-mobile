@@ -29,9 +29,9 @@ onMounted(()=> {
     // cuando monte queremos que traiga los datos del usuario autenticado para que en nuestro formulario de editar aparezcan los datos actuales, en vez de los input en blanco sin nada
     unsubscribeFromAuth = subscribeToAuthChanges(
         newUserData => editData.value = {
-            displayName : newUserData.displayName,
-            bio : newUserData.bio,
-            career : newUserData.career,
+            displayName : newUserData.displayName || '', // este (|| '') lo puso en clase 8 min 41:30. 
+            bio : newUserData.bio || '', // esto sirve para que, si no existe la bio, la career o el displayName, en vez de quedar como undefined queden como ''
+            career : newUserData.career || '',
         })
     // subscribeToAuthChanges retorna como resultado una función para cancelar la suscripción. Esta función se va a guardar en unsubscribeFromAuth, osea que dentro de unsubscribeFromAuth va a tener la función para desuscrirse 
 })

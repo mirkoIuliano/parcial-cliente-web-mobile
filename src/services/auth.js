@@ -1,8 +1,8 @@
 // este archivo se encarga de la autenticación al iniciar sesión
 
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { auth } from "./firebase";
-import { getUserProfileByID, updateUserProfile } from "./user-profile";
+import { createUserProfile, getUserProfileByID, updateUserProfile } from "./user-profile";
 
 // creamos una variable donde vamos a obtener los datos del usuario autenticado (si es que existe)
 let loggedUser = {
@@ -63,6 +63,28 @@ Dato: onAuthStateChanged() queda "suelto" en la raíz del proyecto y esto hace q
     Tan pronto alguien importa este módulo para usar cualquiera de sus funciones, ya le dejamos especificado que vamos a necesitar suscribirnos a la autenticación de Firebase
     Clase 7 (27 de sep), min 36:00 dijo esto 
 */
+
+// creamos la funció para registrnos (crear cuenta)
+export async function register({email, password}) {
+    try {
+        // Registrarse en la aplicaicón requiere 2 acciones:
+        // 1. Crear el usuario en Authentication.
+        // 2. Crear un documento en Firestore, en la collection 'users', usando el uid del usuario en Authentication
+
+        // Primero nos registramos en Authentication
+        const credentials = await createUserWithEmailAndPassword( // createUserWithEmailAndPassword() es como el signInWithEmailAndPassword
+            auth, //  le pasamos la autenticación 
+            email, // el email
+            password // y el password
+        ) // createUserWithEmailAndPassword RETORNA las credenciales del usuario
+
+        // llamamos a la functión "createUserProfile()" de [user-profile.js] para crear el prefil del usuario en Firestore
+        await createUserProfile(credentials.user.uid, {email})
+    } catch (error) {
+        console.error("[auth.js register] Error al tratar de crear una cuenta: ", error)
+        throw error
+    }
+}
 
 
 export async function login({email, password}) {
